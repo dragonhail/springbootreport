@@ -22,12 +22,6 @@ pipeline{
        stage("Code Coverage"){
             steps{
                 sh "./gradlew jacocoTestCoverageVerification"
-                sh "./gradlew jacocoTestReport"
-                publishHTML(target: [
-                reportDir: 'build/reports/jacoco/test/html',
-                reportFiles: 'index.html',
-                reportName: 'Jacoco Report'
-                ])
             }
        }
         stage("Gradle Build"){
@@ -37,7 +31,7 @@ pipeline{
         }
         stage("docker image build"){
                steps{
-                  sh 'docker build -t dragonhailstone/jenkinspipeline2:latest .'
+                  sh 'docker build -t dragonhailstone/springbootpipeline:latest .'
               }
         }
         stage('docker hub login'){
@@ -47,18 +41,7 @@ pipeline{
         }
          stage('docker hub push'){
             steps{
-                sh 'docker push dragonhailstone/jenkinspipeline2:latest'
-            }
-         }
-         stage('deploy'){
-            steps{
-                sh 'docker run -d --rm -p 8765:8080 --name jenkinspipeline2 dragonhailstone/jenkinspipeline2'
-            }
-         }
-         stage('acceptance test'){
-            steps{
-                sleep 60
-                sh 'chmod +x acceptance_test.sh && ./acceptance_test.sh'
+                sh 'docker push dragonhailstone/springbootpipeline:latest'
             }
          }
     }
